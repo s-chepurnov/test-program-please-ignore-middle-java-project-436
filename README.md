@@ -9,6 +9,7 @@
 отвечает по описанному контракту.
 
 Учебный проект Хекслета: https://ru.hexlet.io/programs/test-program-please-ignore-middle-java
+
 Как это должно работать: https://files.hexlet.app/a/qf7bsq
 
 ## Стек

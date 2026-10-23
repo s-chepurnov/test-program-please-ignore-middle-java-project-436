@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: shop
+  datasource:
+    url: ${DATABASE_URL:postgres://postgres:postgres@localhost:5432/shop}
+  jackson:
+    time-zone: UTC
+
+server:
+  port: ${PORT:8080}
