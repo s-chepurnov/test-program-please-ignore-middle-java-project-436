@@ -1,0 +1,30 @@
+{
+  "name": "test-program-please-ignore-middle-java-project-436",
+  "version": "1.0.0",
+  "description": "[![hexlet-check](https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436/actions)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436/issues"
+  },
+  "homepage": "https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436#readme",
+  "dependencies": {
+    "@hexlet/java-online-store-frontend": "^1.0.0"
+  },
+  "devDependencies": {
+    "@typespec/compiler": "^1.17.0",
+    "@typespec/http": "^1.17.0",
+    "@typespec/openapi": "^1.17.0",
+    "@typespec/openapi3": "^1.17.0"
+  }
+}
