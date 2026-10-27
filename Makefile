@@ -9,9 +9,9 @@ install:
 	./gradlew classes
 
 build:
-	rm -rf src/main/resources/public/assets src/main/resources/public/index.html
+	rm -rf public/assets public/images public/index.html
 	mkdir -p public
-	cp -R $(FRONTEND_DIST)/. src/main/resources/public/
+	cp -R $(FRONTEND_DIST)/. public/
 	./gradlew bootJar
 
 start:
