@@ -6,6 +6,9 @@ build/
 !**/src/test/**/build/
 node_modules/
 src/main/resources/public/
+public/assets/
+public/images/
+public/index.html
 
 ### STS ###
 .apt_generated

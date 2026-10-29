@@ -3,6 +3,9 @@ spring:
     name: shop
   datasource:
     url: ${DATABASE_URL:postgres://postgres:postgres@localhost:5432/shop}
+  mvc:
+    problemdetails:
+      enabled: true
   jackson:
     time-zone: UTC
 
