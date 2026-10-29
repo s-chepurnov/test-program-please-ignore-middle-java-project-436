@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ProblemDetail handleNotFound(NoResourceFoundException ex) {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
-        problem.setType(URI.create("https://hexlet.io/problems/not-found"));
+        problem.setType(URI.create("/problems/not-found"));
         problem.setTitle("Resource not found");
         return problem;
     }

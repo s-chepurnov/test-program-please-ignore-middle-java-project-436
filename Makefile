@@ -5,8 +5,8 @@ PORT ?= 8080
 .PHONY: build contract all
 
 install:
+	./gradlew --console=plain -q classes
 	npm ci
-	./gradlew classes
 
 build:
 	rm -rf public/assets public/images public/index.html
@@ -22,5 +22,14 @@ clean:
 
 contract:
 	npx tsp compile contract
+
+test-api:
+	./gradlew --console=plain test
+
+lint:
+	./gradlew --console=plain -q spotlessCheck
+
+lint-fix:
+	./gradlew --console=plain -q spotlessApply
 
 all: clean install build start
