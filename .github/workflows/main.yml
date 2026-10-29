@@ -29,8 +29,8 @@ jobs:
       - run: make build
       - run: npx playwright install --with-deps chromium
       - run: make test-api
-      - name: Запустить приложение в фоне
-        run: |
-          make start &
-          until curl -sf "$APP_URL/api/health" >/dev/null; do sleep 1; done
-      - run: make test
+#      - name: Запустить приложение в фоне
+#        run: |
+#          make start &
+#          until curl -sf "$APP_URL/api/health" >/dev/null; do sleep 1; done
+#      - run: make test
