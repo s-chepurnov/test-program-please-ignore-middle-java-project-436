@@ -2,6 +2,8 @@
 
 [![hexlet-check](https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436/actions)
 
+[![main](https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436/actions/workflows/main.yml/badge.svg)](https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436/actions/workflows/main.yml)
+
 Реализуйте бекенд интернет-магазина комплектующих: регистрацию и авторизацию, каталог с
 фильтрами и пагинацией, промо-блоки главной, оформление заказа и личный кабинет с историей.
 Фреймворк выбираете сами, данные храните в PostgreSQL. Фронтенд предоставляет Хекслет —
