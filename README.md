@@ -4,11 +4,11 @@
 
 [![main](https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436/actions/workflows/main.yml/badge.svg)](https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436/actions/workflows/main.yml)
 
-Реализуйте бекенд интернет-магазина комплектующих: регистрацию и авторизацию, каталог с
-фильтрами и пагинацией, промо-блоки главной, оформление заказа и личный кабинет с историей.
-Фреймворк выбираете сами, данные храните в PostgreSQL. Фронтенд предоставляет Хекслет —
-готовое приложение, которое подключается к вашему API и работает только тогда, когда API
-отвечает по описанному контракту.
+Бекенд интернет-магазина комплектующих: регистрация и авторизация, каталог с
+фильтрами и пагинацией, промо-блоки на главной, оформление заказа и личный кабинет с историей.
+Данные хранятся в PostgreSQL. Фронтенд предоставляет Хекслет - отвечает по описанному контракту.
+
+Ссылка на развернутое приложение: https://test-program-please-ignore-middle-java-8b7d.onrender.com/
 
 Учебный проект Хекслета: https://ru.hexlet.io/programs/test-program-please-ignore-middle-java
 
@@ -26,20 +26,3 @@
 git clone https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436.git
 cd test-program-please-ignore-middle-java-project-436
 ```
-
-## Использование
-
-<!-- Добавьте примеры запуска и запись asciinema — именно это смотрит работодатель -->
-
----
-
-<details>
-<summary>Автоматические тесты Хекслета</summary>
-
-Тесты запускаются на каждый коммит. За запуск отвечает файл `.github/workflows/hexlet-check.yml` — не удаляйте и не переименовывайте ни его, ни репозиторий.
-
-</details>
-
-## О Хекслете
-
-[Хекслет](https://ru.hexlet.io/) — школа программирования: авторские программы обучения с практикой, поддержкой наставников и реальными проектами, которые остаются в резюме. Этот репозиторий — один из таких проектов.
