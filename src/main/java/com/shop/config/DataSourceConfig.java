@@ -18,7 +18,7 @@ public class DataSourceConfig {
 
     @Bean
     public DataSource dataSource(
-            @Value("${DATABASE_URL:postgres://postgres:postgres@localhost:5432/flight-booking}")
+            @Value("${DATABASE_URL:postgres://postgres:postgres@localhost:5432/shop}")
             String rawUrl) {
 
         try {

@@ -3,6 +3,9 @@ spring:
     name: shop
   datasource:
     url: ${DATABASE_URL:postgres://postgres:postgres@localhost:5432/shop}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
 #  mvc:
 #    problemdetails:
 #      enabled: true
