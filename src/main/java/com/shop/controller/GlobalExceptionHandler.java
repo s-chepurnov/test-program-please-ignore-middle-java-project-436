@@ -6,16 +6,17 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import org.springframework.web.ErrorResponseException;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.net.URI;
 
 @ControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
@@ -46,12 +47,12 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
-    @ExceptionHandler(NumberFormatException.class)
-    public ProblemDetail handleNumberFormat(NumberFormatException ex) {
-        var problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
-        problem.setType(URI.create("/problems/not-found"));
-        problem.setTitle("Resource not found");
-        problem.setDetail("Invalid ID format: " + ex.getMessage());
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ProblemDetail handleNotReadable(HttpMessageNotReadableException ex) {
+        var problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problem.setType(URI.create("/problems/validation-error"));
+        problem.setTitle("Validation error");
+        problem.setDetail("Request body is malformed or contains invalid types");
         return problem;
     }
 
@@ -64,12 +65,11 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
-    @ExceptionHandler()
-    public ProblemDetail handleNoResourceFound(NoResourceFoundException ex) {
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ProblemDetail handleNotFound(NoResourceFoundException ex) {
         var problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
         problem.setType(URI.create("/problems/not-found"));
         problem.setTitle("Resource not found");
-        problem.setDetail(ex.getMessage());
         return problem;
     }
 
@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
             case "/problems/invalid-credentials" -> "Invalid credentials";
             case "/problems/not-found" -> "Resource not found";
             case "/problems/email-taken" -> "Email taken";
-            case "/problems/internal-error" -> "Internal server error";
+            case "/problems/internal-server-error", "/problems/internal-error" -> "Internal server error";
             default -> "Error";
         };
     }

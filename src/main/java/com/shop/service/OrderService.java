@@ -3,6 +3,7 @@ package com.shop.service;
 import com.shop.domain.Money;
 import com.shop.domain.Order;
 import com.shop.domain.OrderItem;
+import com.shop.domain.Product;
 import com.shop.domain.ShippingDetails;
 import com.shop.dto.ItemRequest;
 import com.shop.exception.AddressRequiredException;
@@ -13,7 +14,9 @@ import com.shop.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderService {
@@ -31,15 +34,25 @@ public class OrderService {
             throw new AddressRequiredException("Address is required for delivery");
         }
 
+        Map<Integer, Integer> quantities = new HashMap<>();
+        for (var item : requestedItems) {
+            quantities.merge(item.productId(), item.quantity(), Integer::sum);
+        }
+
+        var productIds = new ArrayList<>(quantities.keySet());
+        Map<Integer, Product> products = productRepository.findByIds(productIds);
+
         var resolvedItems = new ArrayList<OrderItem>();
         var unavailable = new ArrayList<String>();
         int total = 0;
 
-        for (var requestItem : requestedItems) {
-            var product = productRepository.findById(requestItem.productId()).orElse(null);
+        for (var entry : quantities.entrySet()) {
+            var productId = entry.getKey();
+            var quantity = entry.getValue();
+            var product = products.get(productId);
 
             if (product == null || !product.available()) {
-                unavailable.add(String.valueOf(requestItem.productId()));
+                unavailable.add(String.valueOf(productId));
                 continue;
             }
 
@@ -47,10 +60,10 @@ public class OrderService {
                     product.id(),
                     product.name(),
                     product.price(),
-                    requestItem.quantity()
+                    quantity
             );
             resolvedItems.add(orderItem);
-            total += product.price().amount() * requestItem.quantity();
+            total += product.price().amount() * quantity;
         }
 
         if (!unavailable.isEmpty()) {

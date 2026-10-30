@@ -7,7 +7,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -88,5 +90,22 @@ public class ProductRepository {
                 "select " + PRODUCT_COLUMNS + " from products p where p.id = ?",
                 MAPPER, id);
         return list.stream().findFirst();
+    }
+
+    public Map<Integer, Product> findByIds(List<Integer> ids) {
+        if (ids.isEmpty()) {
+            return Map.of();
+        }
+
+        var placeholders = String.join(", ", ids.stream().map(id -> "?").toList());
+        var sql = "select " + PRODUCT_COLUMNS + " from products p where p.id in (" + placeholders + ")";
+
+        var products = jdbcTemplate.query(sql, MAPPER, ids.toArray());
+
+        var result = new HashMap<Integer, Product>();
+        for (var product : products) {
+            result.put(product.id(), product);
+        }
+        return result;
     }
 }

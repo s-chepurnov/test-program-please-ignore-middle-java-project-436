@@ -1,9 +1,12 @@
 package com.shop.controller;
 
+import com.shop.seed.Seeder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.*;
@@ -12,10 +15,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class PromoApiTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private Seeder seeder;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        seeder.seed();
+    }
 
     @Test
     void promos_shouldReturnAtLeastTwoBlocksWithFullAvailableProduct() throws Exception {

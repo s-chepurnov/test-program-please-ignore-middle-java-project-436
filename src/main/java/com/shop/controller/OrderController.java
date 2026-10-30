@@ -1,10 +1,10 @@
 package com.shop.controller;
 
-import com.shop.domain.ShippingDetails;
 import com.shop.domain.User;
 import com.shop.dto.CreateOrderRequest;
 import com.shop.dto.OrderDto;
 import com.shop.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,17 +23,9 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto create(@RequestBody CreateOrderRequest request,
+    public OrderDto create(@Valid @RequestBody CreateOrderRequest request,
                            @AuthenticationPrincipal User user) {
-
-        var shipping = new ShippingDetails(
-                request.shipping().method(),
-                request.shipping().recipientName(),
-                request.shipping().phone(),
-                request.shipping().address()
-        );
-
-        var order = orderService.create(user.id(), request.items(), shipping);
+        var order = orderService.create(user.id(), request.items(), request.shipping().toDomain());
         return OrderDto.from(order);
     }
 

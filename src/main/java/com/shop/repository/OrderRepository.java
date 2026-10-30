@@ -8,7 +8,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class OrderRepository {
@@ -74,14 +76,20 @@ public class OrderRepository {
                 rs.getTimestamp("created_at").toInstant()
         }, userId);
 
+        if (orders.isEmpty()) {
+            return List.of();
+        }
+
+        var orderIds = orders.stream().map(row -> (int) row[0]).toList();
+        var itemsByOrder = findItemsForOrders(orderIds);
+
         var result = new ArrayList<Order>();
         for (var row : orders) {
             var id = (int) row[0];
-            var items = findItems(id);
             result.add(new Order(
                     id,
                     (String) row[1],
-                    items,
+                    itemsByOrder.getOrDefault(id, List.of()),
                     (ShippingDetails) row[2],
                     (Money) row[3],
                     (Instant) row[4]
@@ -123,10 +131,29 @@ public class OrderRepository {
         );
     }
 
+    private Map<Integer, List<OrderItem>> findItemsForOrders(List<Integer> orderIds) {
+        var placeholders = String.join(", ", orderIds.stream().map(id -> "?").toList());
+        var rows = jdbcTemplate.query("""
+                select order_id, product_id, product_name, price_amount, quantity
+                from order_items where order_id in (%s) order by order_id, id
+                """.formatted(placeholders), (rs, rowNum) -> new ItemWithOrderId(
+                rs.getInt("order_id"),
+                ITEM_MAPPER.mapRow(rs, rowNum)
+        ), orderIds.toArray());
+
+        var result = new HashMap<Integer, List<OrderItem>>();
+        for (var row : rows) {
+            result.computeIfAbsent(row.orderId(), k -> new ArrayList<>()).add(row.item());
+        }
+        return result;
+    }
+
     private List<OrderItem> findItems(int orderId) {
         return jdbcTemplate.query("""
                 select product_id, product_name, price_amount, quantity
                 from order_items where order_id = ? order by id
                 """, ITEM_MAPPER, orderId);
     }
+
+    private record ItemWithOrderId(int orderId, OrderItem item) {}
 }
