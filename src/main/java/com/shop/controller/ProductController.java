@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -40,13 +38,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ProductDto getById(@PathVariable String id) {
-        int numericId;
-        try {
-            numericId = Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            throw new com.shop.exception.NotFoundException("Product " + id + " not found");
-        }
-        return ProductDto.from(productService.findById(numericId));
+    public ProductDto getById(@PathVariable int id) {
+        return ProductDto.from(productService.findById(id));
     }
 }

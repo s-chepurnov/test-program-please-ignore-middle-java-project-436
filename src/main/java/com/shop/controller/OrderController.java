@@ -1,8 +1,12 @@
 package com.shop.controller;
 
+import com.shop.domain.ShippingDetails;
+import com.shop.domain.User;
+import com.shop.dto.CreateOrderRequest;
 import com.shop.dto.OrderDto;
 import com.shop.service.OrderService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,30 +24,28 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto create(@RequestBody CreateOrderRequest request,
-                           @RequestAttribute("userId") int userId) {
-        var items = request.items().stream()
-                .map(i -> new OrderService.OrderItemRequest(i.productId(), i.quantity()))
-                .toList();
-        var order = orderService.create(userId, items, request.shipping());
+                           @AuthenticationPrincipal User user) {
+
+        var shipping = new ShippingDetails(
+                request.shipping().method(),
+                request.shipping().recipientName(),
+                request.shipping().phone(),
+                request.shipping().address()
+        );
+
+        var order = orderService.create(user.id(), request.items(), shipping);
         return OrderDto.from(order);
     }
 
     @GetMapping
-    public List<OrderDto> list(@RequestAttribute("userId") int userId) {
-        return orderService.findByUser(userId).stream().map(OrderDto::from).toList();
+    public List<OrderDto> list(@AuthenticationPrincipal User user) {
+        return orderService.findByUser(user.id()).stream()
+                .map(OrderDto::from)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public OrderDto getById(@PathVariable String id, @RequestAttribute("userId") int userId) {
-        int numericId;
-        try {
-            numericId = Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            throw new com.shop.exception.NotFoundException("Order " + id + " not found");
-        }
-        return OrderDto.from(orderService.findByIdAndUser(numericId, userId));
+    public OrderDto getById(@PathVariable int id, @AuthenticationPrincipal User user) {
+        return OrderDto.from(orderService.findByIdAndUser(id, user.id()));
     }
-
-    public record CreateOrderRequest(List<ItemRequest> items, com.shop.domain.ShippingDetails shipping) {}
-    public record ItemRequest(int productId, int quantity) {}
 }

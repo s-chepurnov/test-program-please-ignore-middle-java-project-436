@@ -1,6 +1,10 @@
 package com.shop.service;
 
-import com.shop.domain.*;
+import com.shop.domain.Money;
+import com.shop.domain.Order;
+import com.shop.domain.OrderItem;
+import com.shop.domain.ShippingDetails;
+import com.shop.dto.ItemRequest;
 import com.shop.exception.AddressRequiredException;
 import com.shop.exception.NotFoundException;
 import com.shop.exception.UnavailableItemsException;
@@ -22,29 +26,31 @@ public class OrderService {
         this.productRepository = productRepository;
     }
 
-    public Order create(int userId, List<OrderItemRequest> requested, ShippingDetails shipping) {
+    public Order create(int userId, List<ItemRequest> requestedItems, ShippingDetails shipping) {
         if ("delivery".equals(shipping.method()) && (shipping.address() == null || shipping.address().isBlank())) {
             throw new AddressRequiredException("Address is required for delivery");
         }
 
-        var resolved = new ArrayList<OrderItem>();
+        var resolvedItems = new ArrayList<OrderItem>();
         var unavailable = new ArrayList<String>();
         int total = 0;
 
-        for (var req : requested) {
-            var product = productRepository.findById(req.productId()).orElse(null);
+        for (var requestItem : requestedItems) {
+            var product = productRepository.findById(requestItem.productId()).orElse(null);
+
             if (product == null || !product.available()) {
-                unavailable.add(String.valueOf(req.productId()));
+                unavailable.add(String.valueOf(requestItem.productId()));
                 continue;
             }
-            var item = new OrderItem(
+
+            var orderItem = new OrderItem(
                     product.id(),
                     product.name(),
                     product.price(),
-                    req.quantity()
+                    requestItem.quantity()
             );
-            resolved.add(item);
-            total += product.price().amount() * req.quantity();
+            resolvedItems.add(orderItem);
+            total += product.price().amount() * requestItem.quantity();
         }
 
         if (!unavailable.isEmpty()) {
@@ -52,7 +58,7 @@ public class OrderService {
         }
 
         var totalMoney = new Money(total, "RUB");
-        return orderRepository.create(userId, resolved, shipping, totalMoney);
+        return orderRepository.create(userId, resolvedItems, shipping, totalMoney);
     }
 
     public List<Order> findByUser(int userId) {
@@ -66,6 +72,4 @@ public class OrderService {
         }
         return order;
     }
-
-    public record OrderItemRequest(int productId, int quantity) {}
 }

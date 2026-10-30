@@ -1,6 +1,7 @@
 package com.shop.repository;
 
 import com.shop.domain.User;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -20,32 +21,27 @@ public class UserRepository {
     }
 
     public Optional<User> findByEmail(String email) {
-        var list = jdbcTemplate.query(
-                "select id, email, password_hash from users where email = ?",
-                (rs, rowNum) -> new Object[]{
-                        new User(rs.getInt("id"), rs.getString("email")),
-                        rs.getString("password_hash")
-                },
-                email
-        );
-        return list.stream().map(row -> (User) row[0]).findFirst();
+        return jdbcTemplate.query("select id, email from users where email = ?", MAPPER, email)
+                .stream().findFirst();
     }
 
     public Optional<User> findById(int id) {
-        var list = jdbcTemplate.query(
-                "select id, email from users where id = ?",
-                MAPPER, id
-        );
-        return list.stream().findFirst();
+        return jdbcTemplate.query("select id, email from users where id = ?", MAPPER, id)
+                .stream().findFirst();
     }
 
-    public Optional<User> create(String email, String passwordHash) {
-        var sql = """
-                insert into users (email, password_hash) values (?, ?)
-                on conflict (email) do nothing
-                returning id, email
-                """;
-        var list = jdbcTemplate.query(sql, MAPPER, email, passwordHash);
-        return list.stream().findFirst();
+    public String findPasswordHash(String email) {
+        var list = jdbcTemplate.queryForList("select password_hash from users where email = ?", String.class, email);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    public User create(String email, String passwordHash) {
+        try {
+            return jdbcTemplate.queryForObject(
+                    "insert into users (email, password_hash) values (?, ?) returning id, email",
+                    MAPPER, email, passwordHash);
+        } catch (DuplicateKeyException e) {
+            return null;
+        }
     }
 }
