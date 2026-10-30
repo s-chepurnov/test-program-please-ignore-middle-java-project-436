@@ -14,13 +14,7 @@
 
 Как это должно работать: https://files.hexlet.app/a/qf7bsq
 
-## Стек
-
-- Java
-
 ## Установка
-
-<!-- Опишите установку: клонирование, зависимости, переменные окружения -->
 
 ```bash
 git clone https://github.com/s-chepurnov/test-program-please-ignore-middle-java-project-436.git

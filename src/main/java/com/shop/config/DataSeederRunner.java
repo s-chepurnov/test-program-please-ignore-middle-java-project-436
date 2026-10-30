@@ -10,15 +10,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataSeederRunner implements ApplicationRunner {
 
-    private final Seeder seeder;
+  private final Seeder seeder;
 
-    public DataSeederRunner(Seeder seeder) {
-        this.seeder = seeder;
-    }
+  public DataSeederRunner(Seeder seeder) {
+    this.seeder = seeder;
+  }
 
-    @Override
-    public void run(ApplicationArguments args) {
-        int count = seeder.seed();
-        log.info("Данные залиты: {} товаров", count);
-    }
+  @Override
+  public void run(ApplicationArguments args) {
+    int count = seeder.seed();
+    log.info("Данные залиты: {} товаров", count);
+  }
 }
