@@ -1,6 +1,7 @@
 package com.shop.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -143,7 +144,7 @@ class AuthApiTest {
     var session = (MockHttpSession) result.getRequest().getSession(false);
     assertNotNull(session);
 
-    mockMvc.perform(post("/api/logout").session(session)).andExpect(status().isNoContent());
+    mockMvc.perform(delete("/api/session").session(session)).andExpect(status().isNoContent());
 
     mockMvc.perform(get("/api/me").session(session)).andExpect(status().isUnauthorized());
   }
