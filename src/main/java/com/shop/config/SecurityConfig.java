@@ -2,6 +2,7 @@ package com.shop.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,6 +12,8 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+
 
 @Configuration
 @EnableWebSecurity
@@ -47,10 +50,8 @@ public class SecurityConfig {
                     }))
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-        .logout(
-            logout ->
-                logout
-                    .logoutUrl("/api/logout")
+            .logout(logout -> logout
+                    .logoutRequestMatcher(PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.DELETE, "/api/session"))
                     .logoutSuccessHandler((req, res, auth) -> res.setStatus(204))
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID"));
